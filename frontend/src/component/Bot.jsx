@@ -16,9 +16,11 @@ function Bot() {
     if (!input.trim()) return;
     setLoading(true);
     try {
-      const res = await axios.post("https://ai-chatbot-9k9p.onrender.com/", {
+      // ✅ Your Vercel backend endpoint
+      const res = await axios.post("https://ai-chatbot-bdci.vercel.app/bot/v1/message", {
         text: input,
       });
+
       if (res.status === 200) {
         setMessages([
           ...messages,
@@ -28,6 +30,11 @@ function Bot() {
       }
     } catch (error) {
       console.log("❌ Error sending message:", error);
+      setMessages([
+        ...messages,
+        { text: input, sender: "user" },
+        { text: "⚠️ Server error! Please try again later.", sender: "bot" },
+      ]);
     }
     setInput("");
     setLoading(false);
@@ -45,7 +52,10 @@ function Bot() {
           <h1 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
             BotSpoof
           </h1>
-          <FaUserCircle size={32} className="cursor-pointer text-gray-300 hover:text-green-400 transition-colors" />
+          <FaUserCircle
+            size={32}
+            className="cursor-pointer text-gray-300 hover:text-green-400 transition-colors"
+          />
         </div>
       </header>
 
