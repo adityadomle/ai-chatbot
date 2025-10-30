@@ -15,27 +15,30 @@ function Bot() {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
     setLoading(true);
+
     try {
-      // ✅ Your Vercel backend endpoint
-      const res = await axios.post("https://ai-chatbot-bdci.vercel.app/bot/v1/message", {
-        text: input,
-      });
+      // ✅ Use your backend endpoint (Render / local)
+      const res = await axios.post(
+        "https://ai-chatbot-backend.onrender.com/bot/v1/message",
+        { text: input }
+      );
 
       if (res.status === 200) {
-        setMessages([
-          ...messages,
+        setMessages((prev) => [
+          ...prev,
           { text: res.data.userMessage, sender: "user" },
           { text: res.data.botMessage, sender: "bot" },
         ]);
       }
     } catch (error) {
-      console.log("❌ Error sending message:", error);
-      setMessages([
-        ...messages,
+      console.error("❌ Error sending message:", error);
+      setMessages((prev) => [
+        ...prev,
         { text: input, sender: "user" },
         { text: "⚠️ Server error! Please try again later.", sender: "bot" },
       ]);
     }
+
     setInput("");
     setLoading(false);
   };
@@ -73,7 +76,7 @@ function Bot() {
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`px-4 py-3 rounded-2xl max-w-[75%] animate-fadeIn ${
+                  className={`px-4 py-3 rounded-2xl max-w-[75%] ${
                     msg.sender === "user"
                       ? "bg-gradient-to-r from-blue-600 to-green-600 text-white self-end shadow-md"
                       : "bg-gray-800/70 backdrop-blur-md text-gray-100 self-start shadow"
